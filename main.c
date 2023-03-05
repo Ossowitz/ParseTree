@@ -47,33 +47,31 @@ typedef struct Expression {
     ExpressionKind kind;
 } Expression;
 
-/// @brief Сделать абстрактное выражение из конкретного
-///
-/// @details
-///		Выделяет блок памяти размером sizeof(Expression) + dataSizeof.
-///		Вначале идёт информация о типе выражения,
-///     потом, сразу после неё - данные.
-///
-/// @param kind тип конкретного выражения
-/// @param data данные конкретного выражения
-/// @param dataSizeof размер класса конкретного выражения (sizeof(...))
-///
-/// @return абстрактное выражение
+/**
+ * @param:   kind       - specific expression type
+ * @param:   data       - specific expression data
+ * @param:   dataSizeof - class size of a particular expression (sizeof(...))
+ * @return:  abstract expression
+ * @brief:   Make an abstract expression from a specific
+ * @details: Allocates a memory block size sizeof(Expression) + dataSizeof.
+ *              First there’s the type of expression,
+ *                  then immediately after it, data.
+ */
 Expression *makeExpression(ExpressionKind kind, void *data, size_t dataSizeof) {
     if (data == NULL) { return NULL; }
 
-    /// Выделяем больше места, чем под 1 выражение,
-    //? так как нам нужно ещё сохранить данные сразу после.
+    /// Allocate more space than 1 expression,
+    ///     as we still need to save data immediately after.
     Expression *expression = (Expression *) malloc(sizeof(Expression) + dataSizeof);
     if (expression == NULL) { return NULL; }
 
     expression->kind = kind;
-    // Копируем данные за блоком памяти выражения
+    /// Copy data behind the expression memory
     memcpy(expression + 1, data, dataSizeof);
     return expression;
 }
 
-/// Число в диапазоне [0, 2^31 - 1]
+/// Number between [0, 2^31 - 1]
 typedef struct Literal {
     /// Значение числа
     int value;
