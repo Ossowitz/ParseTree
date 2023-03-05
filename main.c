@@ -15,23 +15,24 @@
 
 #define NOT_LOADED_EXCEPTION "not_loaded\n"
 #define INVALID_EXCEPTION    "incorrect\n"
+#define SUCCESS              "success\n"
 
-/// Контекст выражения (определённые переменные)
+/// Context of an expression (certain variables)
 typedef struct Context {
-    /// Строка имён переменных
+    /// Variable name string
     char *variablesNames;
-    /// Массив значений переменных
+    /// Variable value set
     int *variablesValues;
 } Context;
 
-/// Форма выражения
+/// Form of expression
 typedef enum Form {
     NATURAL,
     PREFIX,
     POSTFIX
 } Form;
 
-/// Тип выражения
+/// Type of expression
 typedef enum ExpressionKind {
     LITERAL,
     VARIABLE,
@@ -40,9 +41,9 @@ typedef enum ExpressionKind {
     BINARY
 } ExpressionKind;
 
-/// "Базовый" класс для выражения
+/// "Basic" class for expression
 typedef struct Expression {
-    /// Тип выражения
+    /// Type of expression
     ExpressionKind kind;
 } Expression;
 
@@ -84,7 +85,7 @@ typedef struct Literal {
 ///
 ///		Определяет функцию, преобразующую Expression * в Class *.
 ///		Преобразование производится в случае, если выражение имеет тип Kind.
-///     В противном случае, ошибкаю
+///     В противном случае, ошибка.
 ///
 ///   	Пример:
 ///		DEFINE_EXPRESSION_CAST(Literal, LITERAL)
@@ -97,7 +98,6 @@ typedef struct Literal {
         assert(expr->kind == Kind); \
         return (Class *)((char *)expr + sizeof(Expression)); \
     } \
-
 
 DEFINE_EXPRESSION_CAST(Literal, LITERAL);
 
@@ -243,8 +243,7 @@ Expression *parsePostfixExpression(const char *input, const char **end) {
     return expr;
 }
 
-
-/// Проверить, что сивол это оператор
+/// Проверить, что символ это оператор
 bool isBinaryOperator(char symbol) {
     switch (symbol) {
         case '+':
@@ -286,6 +285,7 @@ int precedence(char op) {
 /// @param end где закончился парсинг
 /// @param lhs левая часть выражения
 /// @param prevOperator  предыдущий оператор оператор
+
 Expression *parseBinaryExpressionRHS(
         const char *input,
         const char **end,
@@ -652,26 +652,35 @@ Command parseCommand(const char *command) {
     return INVALID;
 }
 
-/// @brief: Загрузка выражения в указанной форме и вывод результата в файл
-void load_expression(Expression **expr, Form form, FILE *out) {
+/**
+ * @param: expr - the "base" class object for the expression
+ * @param: form - form of expression
+ * @param: out -  output file
+ * @brief: Loading an expression in the specified form and outputting the result to a file
+ */
+void loadExpression(Expression **expr, Form form, FILE *out) {
     assert(expr);
 
-    // Освободить память от предыдущего выражения
+    // Free memory from previous expression
     if (*expr) {
         freeExpression(*expr);
     }
 
-    // Разбор выражения
+    // Expression parsing
     char *expression = strtok(
-            NULL, // NULL - продолжить разбор предыдущей строки
+            NULL, // NULL - continue parsing the previous line
             " "
     );
     const char *end = NULL;
     *expr = parseExpression(expression, &end, form);
     if (expr == NULL) {
-        fprintf(out, "incorrect\n");
+        fprintf(out,
+                INVALID_EXCEPTION
+        );
     } else {
-        fprintf(out, "success\n");
+        fprintf(out,
+                SUCCESS
+        );
     }
 }
 
@@ -690,15 +699,15 @@ void processLine(char *line, Expression **expr, FILE *out) {
     Command cmd = parseCommand(command);
     switch (cmd) {
         case PARSE: {
-            load_expression(expr, NATURAL, out);
+            loadExpression(expr, NATURAL, out);
             return;
         }
         case LOAD_PRF: {
-            load_expression(expr, PREFIX, out);
+            loadExpression(expr, PREFIX, out);
             return;
         }
         case LOAD_PST: {
-            load_expression(expr, POSTFIX, out);
+            loadExpression(expr, POSTFIX, out);
             return;
         }
         case SAVE_PRF: {
