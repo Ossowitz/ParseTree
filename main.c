@@ -137,7 +137,7 @@ typedef struct BinaryExpression {
 
 DEFINE_EXPRESSION_CAST(BinaryExpression, BINARY);
 
-/// Рекурсивно освободить память под выражение
+/// Recursively release memory under the expression
 void freeExpression(Expression *expr) {
     if (expr == NULL) { return; }
 
@@ -161,7 +161,7 @@ void freeExpression(Expression *expr) {
     free(expr);
 }
 
-/// Forward-declaration для функции parseExpression
+/// Forward-declaration for function parseExpression
 Expression *parseExpression(const char *input, const char **end, Form form);
 
 /// primary-expression:
@@ -173,12 +173,12 @@ Expression *parsePrimaryExpression(
 
     *end = input;
 
-    // Проверка на пустоту
+    /// Void check
     if (input == NULL || *input == '\0') {
         return NULL;
     }
 
-    // Переменная
+    /// Variable
     if (isalpha(*input)) {
         Variable var;
         var.name = *input;
@@ -186,7 +186,7 @@ Expression *parsePrimaryExpression(
         return makeExpression(VARIABLE, &var, sizeof(var));;
     }
 
-    // Число
+    /// Literal
     if (isdigit(*input)) {
         Literal lit;
         lit.value = 0;
@@ -200,7 +200,7 @@ Expression *parsePrimaryExpression(
 
     /// '(' expression ')'
     if (*input == '(') {
-        /* Пропускаем скобку */
+        /* Skip the parenthesis */
         ++input;
 
         Parenthesis paren;
