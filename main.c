@@ -73,7 +73,7 @@ Expression *makeExpression(ExpressionKind kind, void *data, size_t dataSizeof) {
 
 /// Number between [0, 2^31 - 1]
 typedef struct Literal {
-    /// Значение числа
+    /// Value of the number
     int value;
 } Literal;
 
@@ -99,39 +99,39 @@ typedef struct Literal {
 
 DEFINE_EXPRESSION_CAST(Literal, LITERAL);
 
-/// Переменная
+/// Variable
 typedef struct Variable {
-    /// Имя переменной
+    /// Name of variable
     char name;
 } Variable;
 
 DEFINE_EXPRESSION_CAST(Variable, VARIABLE);
 
-/// Выражение в скобках
+/// Parenthesis
 typedef struct Parenthesis {
-    /// Выражение внутри скобок
+    /// Parenthesizing
     Expression *expression;
 } Parenthesis;
 
 DEFINE_EXPRESSION_CAST(Parenthesis, PARENTHESIS);
 
-/// Унарное выражение
+/// Unary expression
 typedef struct UnaryExpression {
-    /// Унарный оператор
+    /// Unary operator
     char op;
-    /// Операнд
+    /// Operand
     Expression *operand;
 } UnaryExpression;
 
 DEFINE_EXPRESSION_CAST(UnaryExpression, UNARY);
 
-/// Бинарное выражения
+/// Binary expression
 typedef struct BinaryExpression {
-    /// Левое выражение
+    /// Left expression
     Expression *left;
-    /// Бинарный оператор
+    /// Binary operator
     char op;
-    /// Правое выражение
+    /// Right expression
     Expression *right;
 } BinaryExpression;
 
