@@ -1,3 +1,10 @@
+/**
+ * @author:  https://github.com/Ossowitz
+ * @author:  https://t.me/DispatcherServlet
+ * @version: 1.0
+ * TODO: implementation parse tree
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -5,6 +12,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+
+#define NOT_LOADED_EXCEPTION "not_loaded\n"
+#define INVALID_EXCEPTION    "incorrect\n"
 
 /// Контекст выражения (определённые переменные)
 typedef struct Context {
@@ -87,6 +97,7 @@ typedef struct Literal {
         assert(expr->kind == Kind); \
         return (Class *)((char *)expr + sizeof(Expression)); \
     } \
+
 
 DEFINE_EXPRESSION_CAST(Literal, LITERAL);
 
@@ -614,7 +625,10 @@ typedef enum Command {
     EVALUATE  // Вычисление выражения
 } Command;
 
-/// Разбор команды
+/**
+ * @param:  command - command to be parsed
+ * @return: the command given in the input
+ */
 Command parseCommand(const char *command) {
     if (strcmp(command, "parse") == 0) {
         return PARSE;
@@ -638,7 +652,7 @@ Command parseCommand(const char *command) {
     return INVALID;
 }
 
-/// @brief Загрузка выражения в указанной форме и вывод результата в файл
+/// @brief: Загрузка выражения в указанной форме и вывод результата в файл
 void load_expression(Expression **expr, Form form, FILE *out) {
     assert(expr);
 
@@ -661,12 +675,18 @@ void load_expression(Expression **expr, Form form, FILE *out) {
     }
 }
 
-/// Обработать строку с коммандок
+/**
+ * @param: line - a string read from a file or command line
+ * @param: expr - the "base" class object for the expression
+ * @param: out  - output file
+ * @brief: processing the line itself
+ */
 void processLine(char *line, Expression **expr, FILE *out) {
     assert(expr);
 
-    // Разбить строку по пробелам
+//    split string by spaces
     char *command = strtok(line, " ");
+//    parse the command
     Command cmd = parseCommand(command);
     switch (cmd) {
         case PARSE: {
@@ -683,7 +703,9 @@ void processLine(char *line, Expression **expr, FILE *out) {
         }
         case SAVE_PRF: {
             if (expr == NULL) {
-                fprintf(out, "not_loaded\n");
+                fprintf(out,
+                        NOT_LOADED_EXCEPTION
+                );
                 return;
             }
 
@@ -693,7 +715,9 @@ void processLine(char *line, Expression **expr, FILE *out) {
         }
         case SAVE_PST: {
             if (expr == NULL) {
-                fprintf(out, "not_loaded\n");
+                fprintf(out,
+                        NOT_LOADED_EXCEPTION
+                );
                 return;
             }
 
@@ -703,7 +727,8 @@ void processLine(char *line, Expression **expr, FILE *out) {
         }
         case EVALUATE: {
             if (expr == NULL) {
-                fprintf(out, "not_loaded\n");
+                fprintf(out,
+                        NOT_LOADED_EXCEPTION);
                 return;
             }
 
@@ -745,7 +770,7 @@ void processLine(char *line, Expression **expr, FILE *out) {
             return;
         }
         case INVALID: {
-            fprintf(out, "incorrect\n");
+            fprintf(out, INVALID_EXCEPTION);
             return;
         }
     };
@@ -754,13 +779,13 @@ void processLine(char *line, Expression **expr, FILE *out) {
 int main(int argc, const char *argv[]) {
     Expression *expr = NULL;
     if (argc == 1) {
-        FILE* in = fopen("input.txt", "r");
+        FILE *in = fopen("input.txt", "r");
         if (in == NULL) {
             perror("can't open file input.txt");
             return 1;
         }
 
-        FILE* out = fopen("output.txt", "w");
+        FILE *out = fopen("output.txt", "w");
         if (out == NULL) {
             perror("can't open file output.txt");
             return 1;
