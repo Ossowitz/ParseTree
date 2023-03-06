@@ -97,6 +97,7 @@ typedef struct Literal {
         return (Class *)((char *)expr + sizeof(Expression)); \
     } \
 
+
 DEFINE_EXPRESSION_CAST(Literal, LITERAL);
 
 /// Variable
@@ -241,7 +242,7 @@ Expression *parsePostfixExpression(const char *input, const char **end) {
     return expr;
 }
 
-/// Проверить, что символ это оператор
+/// Check if a character is an operator
 bool isBinaryOperator(char symbol) {
     switch (symbol) {
         case '+':
@@ -256,7 +257,7 @@ bool isBinaryOperator(char symbol) {
     }
 }
 
-/// Получить приоритет оператора
+/// Get Operator Priority
 int precedence(char op) {
     switch (op) {
         case '^':
@@ -273,17 +274,18 @@ int precedence(char op) {
     }
 }
 
-/// @brief
-///		Парсим правую часть бинарного оператора с учётом приоритета
-/// 	binary-expression-rhs:
-/// 		(binary-operator postfix-expression)*
-///		binary-operator:
-///		 	'+' | '-' | '*' | '/' | '%' | '^'
-/// @param input текст выражения
-/// @param end где закончился парсинг
-/// @param lhs левая часть выражения
-/// @param prevOperator  предыдущий оператор оператор
-
+/**
+ * @param:  input        - expression text
+ * @param:  end          - where did parsing end
+ * @param:  lhs          - left side of expression
+ * @param:  prevOperator - previous operator
+ * @return:
+ * @brief: Parse the right side of the binary operator, taking into account the priority
+ * binary-expression-rhs:
+ *      (binary-operator postfix-expression)*
+ *	binary-operator:
+ *	 	'+' | '-' | '*' | '/' | '%' | '^'
+ */
 Expression *parseBinaryExpressionRHS(
         const char *input,
         const char **end,
@@ -293,15 +295,15 @@ Expression *parseBinaryExpressionRHS(
     while (true) {
         *end = input;
 
-        // Получаем следующий оператор
+        /// We get the following operator
         char op = *input;
-        // Текущий оператор имеет меньший или равный приоритет
-        // (для левоассоциативных) -> возвращаем левую часть
+        /// The current operator has less or equal precedence
+        /// (for left associative) -> return the left side
         if (
                 !isBinaryOperator(op) ||
                 (
                         precedence(op) <= precedence(prevOperator) &&
-                        // ^ - правоассоциативный оператор
+                        // ^ - right associative operator
                         (op != '^' || prevOperator != '^')
                 )
                 ) {
@@ -316,13 +318,13 @@ Expression *parseBinaryExpressionRHS(
             return NULL;
         }
 
-        // Получаем следующий оператор
-        // (или не оператор, но это не важно, так как у них меньше приоритет)
+        /// We get the following operator
+        /// (or not an operator, but that doesn't matter, since they have less precedence)
         char nextOperator = *input;
 
-        // Если следующий оператор имеет больший приоритет, то парсим его первым
+        /// If the next operator has a higher priority, then parse it first
         if (precedence(op) < precedence(nextOperator) ||
-            // ^ - правоассоциативный оператор
+            /// ^ - right associative operator
             (op == '^' && nextOperator == '^')
                 ) {
             rhs = parseBinaryExpressionRHS(input, &input, rhs, op);
