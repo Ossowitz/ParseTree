@@ -280,11 +280,11 @@ int precedence(char op) {
  * @param:  lhs          - left side of expression
  * @param:  prevOperator - previous operator
  * @return:
- * @brief: Parse the right side of the binary operator, taking into account the priority
+ * @brief:  Parse the right side of the binary operator, taking into account the priority
  * binary-expression-rhs:
- *      (binary-operator postfix-expression)*
+ *          (binary-operator postfix-expression)*
  *	binary-operator:
- *	 	'+' | '-' | '*' | '/' | '%' | '^'
+ *	 	    '+' | '-' | '*' | '/' | '%' | '^'
  */
 Expression *parseBinaryExpressionRHS(
         const char *input,
@@ -299,13 +299,12 @@ Expression *parseBinaryExpressionRHS(
         char op = *input;
         /// The current operator has less or equal precedence
         /// (for left associative) -> return the left side
-        if (
-                !isBinaryOperator(op) ||
-                (
-                        precedence(op) <= precedence(prevOperator) &&
-                        // ^ - right associative operator
-                        (op != '^' || prevOperator != '^')
-                )
+        if (!isBinaryOperator(op) ||
+            (
+                    precedence(op) <= precedence(prevOperator) &&
+                    // ^ - right associative operator
+                    (op != '^' || prevOperator != '^')
+            )
                 ) {
             return lhs;
         }
@@ -376,7 +375,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                 *end = input;
                 if (expr == NULL) { return NULL; }
 
-                /* Пропускаем ')' */
+                /* Skipping ')' */
                 ++input;
                 *end = input;
 
@@ -388,7 +387,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                 char op = *input;
 
                 Expression *lhs = parseExpression(
-                        input + 2, // пропускаем оператор и скобку
+                        input + 2, // skipping operator and parenthesis
                         &input,
                         form
                 );
@@ -396,7 +395,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                 if (lhs == NULL) { return NULL; }
 
                 Expression *rhs = parseExpression(
-                        input + 1, // пропускаем запятую
+                        input + 1, // skip the comma
                         &input,
                         form
                 );
@@ -406,7 +405,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                     return NULL;
                 }
 
-                /* Пропускаем ')' */
+                /* Skipping ')' */
                 ++input;
                 *end = input;
 
@@ -427,7 +426,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
             }
 
             Expression *expr = parseExpression(
-                    input + 1, // пропускаем '('
+                    input + 1, // skipping '('
                     &input,
                     form
             );
@@ -435,7 +434,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
             if (expr == NULL) { return NULL; }
 
             if (*input == ')') {
-                /* Пропускаем ')' */
+                /* Skipping ')' */
                 ++input;
                 *end = input;
 
@@ -444,7 +443,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                     unary.op = '!';
                     unary.operand = expr;
 
-                    /* Пропускаем '!' */
+                    /* Skipping '!' */
                     ++input;
                     *end = input;
 
@@ -462,7 +461,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
             }
 
             if (*input == ',') {
-                /* Пропускаем ',' */
+                /* Skipping ',' */
                 ++input;
                 *end = input;
 
@@ -484,7 +483,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                         bin.op = *input;
                         bin.right = rhs;
 
-                        /* Пропускаем оператор */
+                        /* Skipping operator */
                         ++input;
                         *end = input;
 
