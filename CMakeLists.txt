@@ -3,4 +3,4 @@ project(parseTree C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(parseTree main.c)
+add_executable(parseTree parseTree.c)
