@@ -505,7 +505,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
     };
 }
 
-/// Подсчитать факториал числа
+/// Calculate the factorial of a number
 int factorial(int x) {
     if (x <= 1) { return 1; }
     int res = 2;
@@ -574,7 +574,12 @@ int evaluate(Expression *expr, const Context *context) {
     };
 }
 
-/// @brief Печать выражения в префиксной или постфиксной форме
+/**
+ * @param: file - output file
+ * @param: expr - expression
+ * @param: form - record form
+ * @brief: Printing an expression in prefix or postfix form
+ */
 void printExpression(FILE *file, Expression *expr, Form form) {
     if (expr == NULL) { return; }
 
@@ -612,16 +617,16 @@ void printExpression(FILE *file, Expression *expr, Form form) {
 }
 
 
-/// @brief Доступные комманды
+/// @brief:   Available commands
 typedef enum Command {
-    INVALID, // Неверная команда
+    INVALID,  // Invalid command
 
-    PARSE, // Разбор выражения, принимает аргументом выражение
-    LOAD_PRF, // Загрузка выражение в префиксной форме
-    LOAD_PST, // Загрузка выражение в постфиксной форме
-    SAVE_PRF, // Сохранение выражения в префиксной форме
-    SAVE_PST, // Сохранение выражения в постфиксной форме
-    EVALUATE  // Вычисление выражения
+    PARSE,    // Parsing an expression, takes an expression as an argument
+    LOAD_PRF, // Loading an expression in prefix form
+    LOAD_PST, // Loading an expression in postfix form
+    SAVE_PRF, // Storing an expression in prefix form
+    SAVE_PST, // Storing an expression in postfix form
+    EVALUATE  // Expression evaluation
 } Command;
 
 /**
