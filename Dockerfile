@@ -10,5 +10,5 @@ COPY . /app
 RUN gcc -o parseTree parseTree.c -lm
 
 # Укажите команду для запуска программы и передачи аргументов командной строки
-#CMD ["./parseTree", "аргумент1", "аргумент2"]
+#CMD ["./parseTree", "parse 1+2-3*(4/5)%6!^7^8*9+x", "evaluate x=10"]
 CMD ["./parseTree"]
