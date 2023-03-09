@@ -16,6 +16,7 @@
 #define NOT_LOADED_EXCEPTION "not_loaded\n"
 #define INVALID_EXCEPTION    "incorrect\n"
 #define SUCCESS              "success\n"
+#define OPERATOR_EXCEPTION   "unknown operator"
 
 /// Context of an expression (certain variables)
 typedef struct Context {
@@ -78,18 +79,18 @@ typedef struct Literal {
 } Literal;
 
 /// DEFINE_EXPRESSION_CAST(Class, Kind)
-///		Class - класс, в который преобразуется выражение
-///     Kind - тип выражения, который преобразуется в класс Class
+///		Class - the class to which the expression is converted
+///     Kind  - the type of the expression that is converted to the class Class
 ///
-///		Определяет функцию, преобразующую Expression * в Class *.
-///		Преобразование производится в случае, если выражение имеет тип Kind.
-///     В противном случае, ошибка.
+///		Defines a function that converts an Expression * to a Class *.
+///		The conversion is performed if the expression is of type Kind.
+///     Otherwise, an error.
 ///
-///   	Пример:
+///   	For example:
 ///		DEFINE_EXPRESSION_CAST(Literal, LITERAL)
-///			Определяет функцию Literal * asLiteral(Expression *)
-/// 		Преобразующую Expression * в Literal *,
-///			если выражение имеет тип LITERAL.
+///			Defines a function Literal * asLiteral(Expression *)
+/// 		Transformative Expression * into Literal *,
+///			if the expression is of type LITERAL.
 #define DEFINE_EXPRESSION_CAST(Class, Kind) \
     Class *as ## Class(Expression *expr) \
     { \
@@ -473,7 +474,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
                 }
 
                 if (*input == ')') {
-                    /* Пропускаем ')' */
+                    /* Skipping ')' */
                     ++input;
                     *end = input;
 
@@ -545,7 +546,7 @@ int evaluate(Expression *expr, const Context *context) {
                 case '!':
                     return factorial(operand);
                 default:
-                    assert(false && "unknown operator");
+                    assert(false && OPERATOR_EXCEPTION);
             }
             break;
         }
@@ -569,7 +570,7 @@ int evaluate(Expression *expr, const Context *context) {
                     /// Exponentiation
                     return (int) pow(left, right);
                 default:
-                    assert(false && "unknown operator");
+                    assert(false && OPERATOR_EXCEPTION);
             }
         }
     };
