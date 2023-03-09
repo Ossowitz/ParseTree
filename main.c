@@ -515,10 +515,11 @@ int factorial(int x) {
     return res;
 }
 
-/// @brief Подсчитать значение выражения
-/// @param expr выражение
-/// @param context контекст выражения (значения переменных)
-/// @return
+/**
+ * @param:  expr    - expression
+ * @param:  context - expression context (variable values)
+ * @return: Calculate the value of an expression
+ */
 int evaluate(Expression *expr, const Context *context) {
     assert(expr);
 
@@ -527,7 +528,7 @@ int evaluate(Expression *expr, const Context *context) {
             return asLiteral(expr)->value;
         case VARIABLE: {
             const Variable *var = asVariable(expr);
-            // Ищем индекс переменной в строке
+            /// Looking for the index of a variable in a string
             char *location = strchr(context->variablesNames, var->name);
             assert(location);
 
@@ -565,7 +566,7 @@ int evaluate(Expression *expr, const Context *context) {
                 case '%':
                     return left % right;
                 case '^':
-                    /// Возведение в степень
+                    /// Exponentiation
                     return (int) pow(left, right);
                 default:
                     assert(false && "unknown operator");
@@ -659,7 +660,7 @@ Command parseCommand(const char *command) {
 /**
  * @param: expr - the "base" class object for the expression
  * @param: form - form of expression
- * @param: out -  output file
+ * @param: out  -  output file
  * @brief: Loading an expression in the specified form and outputting the result to a file
  */
 void loadExpression(Expression **expr, Form form, FILE *out) {
@@ -806,7 +807,7 @@ int main(int argc, const char *argv[]) {
         char line[256] = {0};
         while (fgets(line, sizeof(line), in)) {
             size_t len = strlen(line);
-            // Удалить символ новой строки
+            /// Remove newline character
             if (len > 0 && line[len - 1] == '\n') {
                 line[len - 1] = '\0';
             }
