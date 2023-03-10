@@ -202,7 +202,7 @@ Expression *parsePrimaryExpression(
 
     /// '(' expression ')'
     if (*input == '(') {
-        /* Skip the parenthesis */
+        /* Skipping the parenthesis */
         ++input;
 
         Parenthesis paren;
@@ -214,7 +214,7 @@ Expression *parsePrimaryExpression(
             return NULL;
         }
 
-        /* Пропускаем скобку */
+        /* Skipping the parenthesis */
         ++input;
         *end = input;
 
@@ -345,7 +345,6 @@ Expression *parseBinaryExpressionRHS(
     }
 }
 
-
 /// In natural form:
 /// expression:
 ///		postfix-expression binary-expression-rhs
@@ -420,7 +419,6 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
         }
         case POSTFIX: {
             *end = input;
-
 
             if (*input != '(') {
                 return parsePrimaryExpression(input, end, form);
@@ -506,7 +504,10 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
     };
 }
 
-
+/**
+ * @param:  x - number to be erected in factorial
+ * @return: factorial
+ */
 int factorial(int x) {
     if (x <= 1) { return 1; }
     int res = 2;
