@@ -506,7 +506,7 @@ Expression *parseExpression(const char *input, const char **end, Form form) {
     };
 }
 
-/// Calculate the factorial of a number
+
 int factorial(int x) {
     if (x <= 1) { return 1; }
     int res = 2;
