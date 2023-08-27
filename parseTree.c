@@ -17,6 +17,9 @@
 #define INVALID_EXCEPTION    "incorrect\n"
 #define SUCCESS              "success\n"
 #define OPERATOR_EXCEPTION   "unknown operator"
+#define OPEN_FILE_EXCEPTION  "can't open file"
+#define INPUT_FILE           "input.txt"
+#define OUTPUT_FILE          "output.txt"
 
 /// Context of an expression (certain variables)
 typedef struct Context {
@@ -744,7 +747,8 @@ void processLine(char *line, Expression **expr, FILE *out) {
         case EVALUATE: {
             if (expr == NULL) {
                 fprintf(out,
-                        NOT_LOADED_EXCEPTION);
+                        NOT_LOADED_EXCEPTION
+                );
                 return;
             }
 
@@ -795,15 +799,15 @@ void processLine(char *line, Expression **expr, FILE *out) {
 int main(int argc, const char *argv[]) {
     Expression *expr = NULL;
     if (argc == 1) {
-        FILE *in = fopen("input.txt", "r");
+        FILE *in = fopen(INPUT_FILE, "r");
         if (in == NULL) {
-            perror("can't open file input.txt");
+            perror(OPEN_FILE_EXCEPTION);
             return 1;
         }
 
-        FILE *out = fopen("output.txt", "w");
+        FILE *out = fopen(OUTPUT_FILE, "w");
         if (out == NULL) {
-            perror("can't open file output.txt");
+            perror(OPEN_FILE_EXCEPTION);
             return 1;
         }
         char line[256] = {0};
