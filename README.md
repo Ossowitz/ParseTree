@@ -2,7 +2,7 @@
 
 ## Деревья выражений
 
-![img.png](photos/img.png)
+![img_1.png](photos%2Fimg_1.png)
 
 ### Подход к решению
 
